@@ -1,0 +1,25 @@
+{
+	"name": "Trek",
+	"author": "Physes",
+	"title": {
+		"fg": "#187dc1"
+	},
+	"table": {
+		"fg": "fg",
+		"items": {
+			"selected": {
+				"bg": "#56a0d1",
+				"fg": "bg"
+			},
+			"item": {
+				"fg": "fg",
+				"bg": "bg"
+			}
+		},
+		"border": {
+			"type": "line",
+			"bg": "#171717",
+			"fg": "#4169e1"
+			}
+		},
+}
