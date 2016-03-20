@@ -1,5 +1,3 @@
-var App = function() {
-	
 
 
 blessed = require('blessed');
@@ -40,11 +38,11 @@ function boxes(parent, left, top, width, height, content) {
 			bold: true
 		},
 		style: {
-			fg: '#4169e1',
+			fg: '#6d8ce8',
     		bg: '#182125',
 
 		border: {
-      		fg: '#4169e1',
+      		fg: '#6d8ce8',
     		bg: '#182125'
     	},
 		}
@@ -69,11 +67,11 @@ function buttons(parent, top, left, name, content) {
 		name:  this.name,
 		content: this.content,
 		style: {
-  		fg: '#4169e1',
+  		fg: '#6d8ce8',
     	bg: '#182125',
     	bold: true,
   	border: {
-  		fg: '#4169e1',
+  		fg: '#6d8ce8',
     	bg: '#182125'
   	},
   	hover: {
@@ -83,6 +81,102 @@ function buttons(parent, top, left, name, content) {
 });
 
 };
+
+function forms(parent, top, left, width, height, name) {
+	this.parent = parent;
+	this.top = top;
+	this.left = left;
+	this.width = width;
+	this.height = height;
+	this.name = name;
+
+	this.form = blessed.form({
+		parent: this.parent,
+		top: this.top,
+		left: this.left,
+		width: this.width,
+		height: this.height,
+		name: this.name
+	});
+};
+
+function lists(parent, left, top, width, height items){
+
+	this.parent = parent;
+	this.left = left;
+	this.top = top;
+	this.width = width;
+	this.height = height;
+	this.items = items;
+
+	this.list = blessed.list({
+		parent: this.parent,
+		left: this.left,
+		top: this.top,
+		width: this.width,
+		height: this.height,
+		items: this.items,
+		intertSelected: true,
+		mouse: true,
+		tags: true,
+		border: {
+			type: 'line',
+			bold: true
+		},
+		style: {
+			fg: '#6d8ce8',
+    		bg: '#182125',
+
+		border: {
+      		fg: '#6d8ce8',
+    		bg: '#182125'
+    	},
+		}
+	});
+};
+
+
+
+function textarea(parent, top, left, height, width, inputOnFocus, name){
+	this.parent = parent;
+	this.top = top;
+	this.left = left;
+	this.height = height;
+	this.width = width;
+	this.inputOnFocus = inputOnFocus;
+	this.name = name;
+
+	this.input = blessed.textarea({
+    parent: this.parent,
+    top: this.top,
+    left: this.left,
+    height: this.height,
+    width: this.width,
+    inputOnFocus: this.inputOnFocus,
+    name: this.name,
+    input: true,
+    keys: true,
+    style: {
+        fg: '#6d8ce8',
+    	bg: '#182125',
+        focus: {
+            fg: '#6d8ce8',
+    		bg: '#182125'
+        }
+    }
+});
+
+};
+
+/*
+function theme(bg, fg) {
+	elements
+
+};
+*/
+
+
+
 
 function appender(elements){
 	this.elements = elements;
@@ -253,10 +347,29 @@ function tut_append() {
 
 function login() {
 
-	var hello = new buttons(body.unit, 7, 'center', 'start', 'Hello World...');
-	var login_elements = [[body.unit], [hello.btn, exit.btn]];
+	var enter = new boxes('', 'center', 5, 50, 11, "\n{bold}\tAlias: \n\n\tCipher Key: {/bold}\n\n\n\
+\t______  ______  ______  ______  ______");	
+	var customs = new buttons('', 18, 'center', 'customs',
+		"To set up a new cipher key press[c] for Customs.");
+	var back = new buttons('', '90%', 'center', 'back', 'Back[b]');
+
+	var alias = new textarea(enter.unit, 7, 70, 1, 20, true, alias);
+
+	var cipher  = new textarea(enter.unit, 9, 70, 1, 30, true, cipher)
+
+	var login_elements = [[body.unit, enter.unit], [exit.btn, customs.btn, back.btn, alias.input]];
 
 	appender(login_elements);
+
+	window.key(['b'], function(ch, key) {
+		remover(login_elements);
+		title();
+	});
+
+	back.btn.on('press', function() {
+		remover(login_elements);
+		title();
+	});
 };
 
 /*
@@ -274,7 +387,3 @@ dashboard() {
 };
 
 */
-
-};
-
-App.init();
