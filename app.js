@@ -13,7 +13,7 @@ var window = blessed.screen({
 /*Declare global variables. tut_key is a string for the tutorial process, and i is a counter.
 Variables for tutorial process. */
 	
-	i = 0;
+	counter = 0;
 	tut_content = "";
 
 function boxes(parent, left, top, width, height, content) {
@@ -100,7 +100,7 @@ function forms(parent, top, left, width, height, name) {
 	});
 };
 
-function lists(parent, left, top, width, height items){
+function lists(parent, left, top, width, height, items){
 
 	this.parent = parent;
 	this.left = left;
@@ -314,13 +314,18 @@ log your personal data and plan ahead.{/bold}{/center}\n\n\n\n",
 
 function tut_append() {
 	
-	if(i < tut.length) {
-		tut_content += tut[i];
+	if(counter < tut.length) {
+		tut_content += tut[counter];
 		tutorial.unit.setContent(tut_content);
 		window.render();
-		i += 1;
+		counter += 1;
 		}
 	};
+
+function tut_remove() {
+	tut_content = "";
+	counter = 0;
+};
 
 	
 	window.key(['n'], function(ch, key) {
@@ -334,11 +339,13 @@ function tut_append() {
 
 
 	window.key(['b'], function(ch, key) {
+		tut_remove();
 		remover(tutorial_elements);
 		title();
 	});
 
 	back.btn.on('press', function() {
+		tut_remove();
 		remover(tutorial_elements);
 		title();
 	});
@@ -355,11 +362,15 @@ function login() {
 
 	var alias = new textarea(enter.unit, 7, 70, 1, 20, true, alias);
 
-	var cipher  = new textarea(enter.unit, 9, 70, 1, 30, true, cipher)
+	var cipher  = new textarea(enter.unit, 9, 70, 1, 30, true, cipher);
 
-	var login_elements = [[body.unit, enter.unit], [exit.btn, customs.btn, back.btn, alias.input]];
+	var login_elements = [[body.unit, enter.unit], [exit.btn, customs.btn, back.btn], [alias.input, cipher.input]];
 
 	appender(login_elements);
+
+	body.unit.on(['click'], function(ch, key) {
+
+	});
 
 	window.key(['b'], function(ch, key) {
 		remover(login_elements);
@@ -369,6 +380,11 @@ function login() {
 	back.btn.on('press', function() {
 		remover(login_elements);
 		title();
+	});
+
+	window.key(['c'], function(ch, key) {
+		remover(login_elements);
+		start_tut();
 	});
 };
 
