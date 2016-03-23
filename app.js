@@ -267,13 +267,15 @@ enter.btn.on('press', function(){
 function start_tut() {
 
 	var start = new buttons(body.unit, 7, 'center', 'start',
-		'Press [s] to begin tutorial...');
+		'Press [t] to begin tutorial.');
+	var proceed = new buttons(body.unit, 10, 'center', 'proceed',
+		'Press [c] to proceed directly to customs.');
 
-	var start_elements = [[body.unit], [start.btn, exit.btn]];
+	var start_elements = [[body.unit], [start.btn, proceed.btn, exit.btn]];
 
 	appender(start_elements);
 	
-	window.key(['s'], function(ch, key) {
+	window.key(['t'], function(ch, key) {
 		remover(start_elements);
 		walkthrough();
 	});
@@ -283,19 +285,26 @@ function start_tut() {
 		walkthrough();
 	});
 
+	window.key(['c'], function(ch,key) {
+		remover(start_elements);
+		key_gen();
+	});
+
 };
 
 
 function walkthrough() {
 
 
-var tutorial = new boxes('', 'center', 5, 130, 30, '');
+var frame = new boxes('', 'center', 5, 130, 30, '');
 
 var back = new buttons('', '90%', 'center', 'back', 'Back[b]');
 
-var next = new buttons('', 5, 'center', 'next', ' Next[n] ');
+var next = new buttons('', 5, 'center', 'next', ' Tutorial ');
 
-var tutorial_elements = [[body.unit, tutorial.unit], [next.btn, back.btn, exit.btn]];
+frame.unit.style.border.fg = '#182125';
+
+var tutorial_elements = [[body.unit, frame.unit], [next.btn, back.btn, exit.btn]];
 
 	appender(tutorial_elements);
 	
@@ -303,40 +312,48 @@ var tut = ["{center}{bold}\n\nLogger helps you keep encrypted journals, \
 logs, lists and calendars stored on your machine\n or on the IPFS (Interplanetary File System), \
 so you can access them from anywhere.\n\n",
 "You can use Logger to keep track of your thoughts, \
-log your personal data and plan ahead.{/bold}{/center}\n\n\n\n",
-"\t\t\tFollow 5 steps to getting things done:\n\n",
-"\t\t\tCAPTURE: Collect everything that has your attention, big or small.\n\n",
-"\t\t\tCLARIFY: Process what you have collected. Decide what\'s actionable and what\'s next.\n\n",
-"\t\t\tORGANIZE: Put everything where it belongs. Use the lister and calendar to schedule tasks and events.\n\n",
-"\t\t\tREFLECT: Review your data, calendar and priorities frequently. Use the logger to keep track.\n\n",
-"\t\t\tENGAGE: Take action with confidence.\n\n"];
+log your personal data and plan ahead.{/bold}\n\n\n\n",
+"Follow 5 steps to getting things done:\n\n",
+"CAPTURE: Collect everything that has your attention, big or small.\n\n",
+"CLARIFY: Process what you have collected. Decide what\'s actionable and what\'s next.\n\n",
+"ORGANIZE: Put everything where it belongs. Use the lister and calendar to schedule tasks and events.\n\n",
+"REFLECT: Review your data, calendar and priorities frequently. Use the logger to keep track.\n\n",
+"ENGAGE: Take action with confidence.\n\n\n\n\n\n",
+"{right}Press [enter] to continue.\t{/center}"];
 
+
+		tut_content += tut[0];
+		frame.unit.setContent(tut_content);
+		window.render();
+		counter = 1;
 
 function tut_append() {
 	
 	if(counter < tut.length) {
 		tut_content += tut[counter];
-		tutorial.unit.setContent(tut_content);
+		frame.unit.setContent(tut_content);
 		window.render();
 		counter += 1;
-		}
-	};
+	} else if (counter = tut.length) {
+		tut_remove();
+		remover(tutorial_elements);
+		key_gen();
+	} 
+};
+
 
 function tut_remove() {
 	tut_content = "";
 	counter = 0;
 };
-
 	
-	window.key(['n'], function(ch, key) {
+	window.key(['enter'], function(ch, key) {
 		tut_append();	
 	});
 
 	next.btn.on('press', function() {
 		tut_append();
 	});
-
-
 
 	window.key(['b'], function(ch, key) {
 		tut_remove();
@@ -351,6 +368,21 @@ function tut_remove() {
 	});
 
 };
+
+function key_gen() {
+	var frame = new boxes('', 'center', 5, 130, 30, '');
+	/*frame.unit.style.border.fg = '#182125';*/
+
+	var key_gen_elements = [[body.unit], [exit.btn]];
+
+	body.unit.setContent("{center}Hello World{/center}");
+
+	appender(key_gen_elements);
+};
+
+
+
+
 
 function login() {
 
@@ -390,9 +422,6 @@ function login() {
 
 /*
 
-key_gen() {
-
-};
 
 login() {
 
