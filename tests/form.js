@@ -4,11 +4,11 @@ var blessed = require('blessed')
 var form = blessed.form({
   parent: screen,
   keys: true,
-  left: 0,
-  top: 0,
-  width: 30,
-  height: 4,
-  bg: 'green',
+  left: 'center',
+  top: 'center',
+  width: '50%',
+  height: '50%',
+  bg: '#182125',
   content: 'Submit or cancel?'
 });
 

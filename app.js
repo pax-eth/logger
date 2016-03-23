@@ -14,7 +14,7 @@ var window = blessed.screen({
 Variables for tutorial process. */
 	
 	counter = 0;
-	tut_content = "";
+	content = "";
 
 function boxes(parent, left, top, width, height, content) {
 
@@ -96,7 +96,40 @@ function forms(parent, top, left, width, height, name) {
 		left: this.left,
 		width: this.width,
 		height: this.height,
-		name: this.name
+		name: this.name,
+		keys: true,
+	});
+};
+
+function input(parent, top, left, width, height, content) {
+	this.parent = parent;
+	this.left = left;
+	this.top = top;
+	this.width = width;
+	this.height = height;
+	this.content = content;
+
+	this.input = blessed.input({
+		parent: this.parent,
+		top: this.top,
+		left: this.left,
+		width: this.width,
+		height: this.height,
+		content: this.content,
+		tags: true,
+		border: {
+			type: 'line',
+			bold: true
+		},
+		style: {
+			fg: '#6d8ce8',
+    		bg: '#182125',
+
+		border: {
+      		fg: '#6d8ce8',
+    		bg: '#182125'
+    	},
+		}
 	});
 };
 
@@ -203,13 +236,15 @@ function remover(elements){
 	}
 };
 
+
+
 //Global box specifications
 
 var body = new boxes('', 'center', 'center', '100%', '100%', '');
 
 //Global buttons specifications
 
-var exit = new buttons('', 0, '92%', 'exit', ' Exit[x] ');
+var exit = new buttons('', 0, '91%', 'exit', ' Exit[x] ');
 
 //EXIT
 
@@ -240,23 +275,15 @@ appender(title_elements);
 
 //CUSTOMS
 
-window.key(['c'], function(ch, key) {
+
+window.onceKey(['c'], function(ch, key) {
 	remover(title_elements);
 	start_tut();
 });
 
-customs.btn.on('press', function() {
-	remover(title_elements);
-	start_tut();
-});
 
 // ENTER
-window.key(['e'], function(ch,key) {
-	remover(title_elements);
-	login();
-});
-
-enter.btn.on('press', function(){
+window.onceKey(['e'], function(ch,key) {
 	remover(title_elements);
 	login();
 });
@@ -275,7 +302,7 @@ function start_tut() {
 
 	appender(start_elements);
 	
-	window.key(['t'], function(ch, key) {
+	window.onceKey(['t'], function(ch, key) {
 		remover(start_elements);
 		walkthrough();
 	});
@@ -285,7 +312,7 @@ function start_tut() {
 		walkthrough();
 	});
 
-	window.key(['c'], function(ch,key) {
+	window.onceKey(['c'], function(ch,key) {
 		remover(start_elements);
 		key_gen();
 	});
@@ -313,37 +340,38 @@ logs, lists and calendars stored on your machine\n or on the IPFS (Interplanetar
 so you can access them from anywhere.\n\n",
 "You can use Logger to keep track of your thoughts, \
 log your personal data and plan ahead.{/bold}\n\n\n\n",
-"Follow 5 steps to getting things done:\n\n",
-"CAPTURE: Collect everything that has your attention, big or small.\n\n",
-"CLARIFY: Process what you have collected. Decide what\'s actionable and what\'s next.\n\n",
+"Get things done in five steps:\n\n",
+"CAPTURE: Collect everything that has your attention. Use the journal to empty your mind onto the screen.\n\n",
+"CLARIFY: Process what you have collected. Decide what it means, what\'s actionable and what\'s next.\n\n",
 "ORGANIZE: Put everything where it belongs. Use the lister and calendar to schedule tasks and events.\n\n",
 "REFLECT: Review your data, calendar and priorities frequently. Use the logger to keep track.\n\n",
 "ENGAGE: Take action with confidence.\n\n\n\n\n\n",
 "{right}Press [enter] to continue.\t{/center}"];
 
 
-		tut_content += tut[0];
-		frame.unit.setContent(tut_content);
+		content += tut[0];
+		frame.unit.setContent(content);
 		window.render();
 		counter = 1;
 
 function tut_append() {
 	
 	if(counter < tut.length) {
-		tut_content += tut[counter];
-		frame.unit.setContent(tut_content);
+		content += tut[counter];
+		frame.unit.setContent(content);
 		window.render();
 		counter += 1;
 	} else if (counter = tut.length) {
 		tut_remove();
 		remover(tutorial_elements);
+		window.unkey(['enter']);
 		key_gen();
 	} 
 };
 
 
 function tut_remove() {
-	tut_content = "";
+	content = "";
 	counter = 0;
 };
 	
@@ -351,33 +379,41 @@ function tut_remove() {
 		tut_append();	
 	});
 
-	next.btn.on('press', function() {
-		tut_append();
-	});
 
-	window.key(['b'], function(ch, key) {
+	window.onceKey(['b'], function(ch, key) {
 		tut_remove();
 		remover(tutorial_elements);
+		window.unkey(['enter']);
 		title();
 	});
-
-	back.btn.on('press', function() {
-		tut_remove();
-		remover(tutorial_elements);
-		title();
-	});
-
 };
 
+
 function key_gen() {
+
 	var frame = new boxes('', 'center', 5, 130, 30, '');
 	/*frame.unit.style.border.fg = '#182125';*/
+	var back = new buttons('', '90%', 'center', 'back', 'Back[b]');
 
-	var key_gen_elements = [[body.unit], [exit.btn]];
+	var alias = new buttons(frame.unit, 15, 'center', 'input', 'Pick an alias: ');
 
-	body.unit.setContent("{center}Hello World{/center}");
+	var alias_in = new textarea('', 16, 'center', 1, 30, true, 'alias_gen');
+
+	var key_gen_content = ["{center}{bold}\n\nYour alias will be you username in Logger.{/bold}",
+	"\n\n\n*Max 10 characters","{/bold}{/center}"];
+
+	var key_gen_elements = [[body.unit, frame.unit], [exit.btn, back.btn, alias.btn, alias_in.input]];
+
+
+	frame.unit.content = key_gen_content[0];
 
 	appender(key_gen_elements);
+
+
+	window.onceKey(['b'], function(ch, key) {
+		remover(key_gen_elements);
+		walkthrough();
+	});
 };
 
 
@@ -404,17 +440,12 @@ function login() {
 
 	});
 
-	window.key(['b'], function(ch, key) {
+	window.onceKey(['b'], function(ch, key) {
 		remover(login_elements);
 		title();
 	});
 
-	back.btn.on('press', function() {
-		remover(login_elements);
-		title();
-	});
-
-	window.key(['c'], function(ch, key) {
+	window.onceKey(['c'], function(ch, key) {
 		remover(login_elements);
 		start_tut();
 	});
